@@ -189,7 +189,7 @@ class grid(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load(
             join("Images", "game", "white_grid.png")).convert_alpha()
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect = self.image.get_rect(center=(x, y))
         self.slot = False
         self.chosen = False
         self.state = None
@@ -345,8 +345,8 @@ def random_platform():
 
 
 def grid_init():
-    xcoords = [544, 712, 880, 1048, 1216]
-    ycoords = [120, 288, 456, 624, 792]
+    xcoords = [544+80, 712+80, 880+80, 1048+80, 1216+80]
+    ycoords = [120+80, 288+80, 456+80, 624+80, 792+80]
     grids = []
 
     for x in xcoords:
@@ -358,9 +358,10 @@ def grid_init():
 
 def grid_check(grids, p1, p2):
     i = 0
+    j = 0
     
     for grid in grids:
-        grid.update()
+        grid.update()  
         if p1.turn:
             if pygame.sprite.collide_mask(p1, grid):
                 grids.pop(i)
@@ -381,8 +382,13 @@ def grid_check(grids, p1, p2):
             else:
                 grid.chosen = False
             i += 1
+        if grid.slot:
+            j+=1
+        if j == 25:
+            return True
 
 def check_winner(grids):
+
     # Check rows
     for i in range(0, 25, 5):
         if grids[i].state == grids[i + 1].state == grids[i + 2].state == grids[i + 3].state == grids[i + 4].state == "red" or grids[i].state == grids[i + 1].state == grids[i + 2].state == grids[i + 3].state == grids[i + 4].state == "blue":
@@ -397,14 +403,26 @@ def check_winner(grids):
     if grids[0].state == grids[6].state == grids[12].state == grids[18].state == grids[24].state == "red" or grids[4].state == grids[8].state == grids[12].state == grids[16].state == grids[20].state == "red":
         return True
 
-    if grids[0].state == grids[6].state == grids[12].state == grids[18].state == grids[24].state == "blue" or grids[4].state == grids[8].state == grids[12].state == grids[16].state == grids[20].state == "blue":
+    elif grids[0].state == grids[6].state == grids[12].state == grids[18].state == grids[24].state == "blue" or grids[4].state == grids[8].state == grids[12].state == grids[16].state == grids[20].state == "blue":
         return True
     return False
 
 #def p1_win():
     
 
-def home_screen():
+def Intro():
+    cube = pygame.image.load(join("Images", "Backgrounds", "splash1.png")).convert()
+    rect = cube.get_rect(center = (960, 540))
+    screen.blit(cube, rect)
+    pygame.display.flip()
+    pygame.time.wait(1500)
+
+    riverbytes = pygame.image.load(join("Images", "Backgrounds", "splash2.png")).convert()
+    rect2 = riverbytes.get_rect(center = (960, 540))
+    screen.blit(riverbytes, rect2)
+    pygame.display.flip()
+    pygame.time.wait(1500)
+
     homescrn = pygame.image.load(
         "Images\Backgrounds\Starting_Screen.png").convert()
     homescrn = pygame.transform.scale(homescrn, (width, height))
@@ -495,6 +513,11 @@ def main_game(p1, p2):
     for platform in platforms:
         game_objects.append(platform.rect)
 
+    for grid in grids:
+        grid.slot = False
+        grid.state = None
+
+
     game_won = False
 
     while not game_won:
@@ -523,19 +546,28 @@ def main_game(p1, p2):
                             p1.turn = True
                             p2.turn = False
 
-        for grid in grids:
-            grid.update()
         p1.loop(FPS)
         p2.loop(FPS)
         handle_move1(p1, game_objects)
         handle_move2(p2, game_objects)
-        grid_check(grids, p1, p2)
+        full_grids = grid_check(grids, p1, p2)
         draw_game(p1, p2, platforms, grids)
         if check_winner(grids):
             if p1.turn:
-                home_screen()
+                p1win = pygame.image.load(join("Images", "Backgrounds", "p1win.png")).convert()
+                screen.blit(p1win, (0,0))
+                pygame.display.flip()
             if p2.turn:
-                home_screen()
+                p2win = pygame.image.load(join("Images", "Backgrounds", "p2win.png")).convert()
+                screen.blit(p2win, (0,0))
+                pygame.display.flip()
+            game_won = True
+            p1.ready = False
+            p2.ready = False
+        if full_grids:
+            tie = pygame.image.load(join("Images", "Backgrounds", "draw.png")).convert()
+            screen.blit(tie, (0,0))
+            pygame.display.flip()
             game_won = True
             p1.ready = False
             p2.ready = False
@@ -543,7 +575,7 @@ def main_game(p1, p2):
 
 def main(screen):
     clock = pygame.time.Clock()
-    home_screen()
+    Intro()
 
     p1 = Player1(456, 832, 96, 88)
     p2 = Player2(1000, 832, 96, 88)
