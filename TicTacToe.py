@@ -8,16 +8,16 @@ import os
 pygame.init()
 
 # Set up the game window
-width, height = 1920, 1080
+width, height = 1200, 675
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Up You Go! Xs and Os - Tic Tac Toe")
 
 FPS = 60
-PLAYER_VEL = 7
+PLAYER_VEL = 4
 
 
 class Player1(pygame.sprite.Sprite):
-    GRAVITY = 1.2
+    GRAVITY = 1
 
     def __init__(self, x, y, width, height):
         super().__init__()
@@ -47,7 +47,7 @@ class Player1(pygame.sprite.Sprite):
             self.direction = "right"
 
     def jump(self):
-        self.y_vel = -self.GRAVITY * 10
+        self.y_vel = -self.GRAVITY * 7
         self.jump_count += 1
         if self.jump_count == 1:
             self.fall_count = 0
@@ -63,9 +63,7 @@ class Player1(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
-        self.image = pygame.image.load("redplayer.png").convert_alpha()
-        self.image = pygame.transform.scale(
-            self.image, (self.width, self.height))
+        self.image = pygame.image.load(join("Images", "Items", "p1.png")).convert_alpha()
         if self.direction == "left":
             self.image = pygame.transform.flip(self.image, True, False)
 
@@ -86,7 +84,7 @@ class Player1(pygame.sprite.Sprite):
 
 
 class Player2(pygame.sprite.Sprite):
-    GRAVITY = 1.2
+    GRAVITY = 1
 
     def __init__(self, x, y, width, height):
         super().__init__()
@@ -116,7 +114,7 @@ class Player2(pygame.sprite.Sprite):
             self.direction = "right"
 
     def jump(self):
-        self.y_vel = -self.GRAVITY * 10
+        self.y_vel = -self.GRAVITY * 7
         self.jump_count += 1
         if self.jump_count == 1:
             self.fall_count = 0
@@ -132,9 +130,7 @@ class Player2(pygame.sprite.Sprite):
         self.update()
 
     def update(self):
-        self.image = pygame.image.load("blueplayer.png").convert_alpha()
-        self.image = pygame.transform.scale(
-            self.image, (self.width, self.height))
+        self.image = pygame.image.load(join("Images", "Items", "p2.png")).convert_alpha()
         if self.direction == "right":
             self.image = pygame.transform.flip(self.image, True, False)
 
@@ -160,7 +156,7 @@ class object(pygame.sprite.Sprite):
         self.name = name
         self.rect = pygame.Rect(x, y, width, height)
         self.image = pygame.image.load(
-            join("Images", "Lobby", self.name)).convert_alpha()
+            join("Images", "Items", self.name)).convert_alpha()
         self.width = width
         self.height = height
         self.mask = pygame.mask.from_surface(self.image)
@@ -176,7 +172,7 @@ class platform(pygame.sprite.Sprite):
         super().__init__()
         self.name = name
         self.image = pygame.image.load(
-            join("Images", "game", self.name)).convert_alpha()
+            join("Images", "Items", self.name)).convert_alpha()
         self.rect = self.image.get_rect(topleft=(x, y))
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -188,7 +184,7 @@ class grid(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load(
-            join("Images", "game", "white_grid.png")).convert_alpha()
+            join("Images", "Items", "white.png")).convert_alpha()
         self.rect = self.image.get_rect(center=(x, y))
         self.slot = False
         self.chosen = False
@@ -198,16 +194,16 @@ class grid(pygame.sprite.Sprite):
         if self.slot:
             if self.state == "red":
                 self.image = pygame.image.load(
-                    join("Images", "game", "1.png")).convert_alpha()
+                    join("Images", "Items", "X.png")).convert_alpha()
             elif self.state == "blue":
                 self.image = pygame.image.load(
-                    join("Images", "game", "0.png")).convert_alpha()
+                    join("Images", "Items", "O.png")).convert_alpha()
         elif self.chosen:
             self.image = pygame.image.load(
-                join("Images", "game", "green_grid.png")).convert_alpha()
+                join("Images", "Items", "green.png")).convert_alpha()
         else:
             self.image = pygame.image.load(
-                join("Images", "game", "white_grid.png")).convert_alpha()
+                join("Images", "Items", "white.png")).convert_alpha()
 
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -296,9 +292,9 @@ def handle_move2(p2, objects):
 
 
 def random_platform():
-    xcoords = [544, 712, 880, 1048, 1216]
-    ycoordsbot = [279, 447, 615, 783, 951]
-    ycoordstop = [120, 288, 456, 624,]
+    xcoords = [340, 445, 550, 655, 760]
+    ycoordsbot = [174, 279, 384, 489, 594]
+    ycoordstop = [75, 180, 285, 390]
 
     x_values = []
     y_values = []
@@ -320,24 +316,24 @@ def random_platform():
         x_values.append(x)
         y_values.append(y)
 
-    platform1 = platform("FLATFORM.png", x_values[0] - 22, y_values[0] - 13)
-    platform2 = platform("FLATFORM.png", x_values[1] - 22, y_values[0] - 13)
-    platform3 = platform("FLATFORM.png", x_values[2] - 22, y_values[1] - 13)
-    platform4 = platform("FLATFORM.png", x_values[3] - 22, y_values[1] - 13)
-    platform5 = platform("FLATFORM.png", x_values[4] - 22, y_values[2] - 13)
-    platform6 = platform("FLATFORM.png", x_values[5] - 22, y_values[2] - 13)
-    platform7 = platform("FLATFORM.png", x_values[6] - 22, y_values[3] - 13)
-    platform8 = platform("FLATFORM.png", x_values[7] - 22, y_values[3] - 13)
-    platform9 = platform("FLATFORM.png", x_values[8] - 22, y_values[4] - 13)
-    platform10 = platform("FLATFORM.png", x_values[9] - 22, y_values[4] - 13)
-    platform11 = platform("Vertical_Platforms.png",
-                          x_values[10] - 24, y_values[5] - 16)
-    platform12 = platform("Vertical_Platforms.png",
-                          x_values[11] - 24, y_values[6] - 16)
-    platform13 = platform("Vertical_Platforms.png",
-                          x_values[12] - 24, y_values[7] - 16)
-    platform14 = platform("Vertical_Platforms.png",
-                          x_values[13] - 24, y_values[8] - 16)
+    platform1 = platform("platform.png", x_values[0] - 10, y_values[0] - 9)
+    platform2 = platform("platform.png", x_values[1] - 10, y_values[0] - 9)
+    platform3 = platform("platform.png", x_values[2] - 10, y_values[1] - 9)
+    platform4 = platform("platform.png", x_values[3] - 10, y_values[1] - 9)
+    platform5 = platform("platform.png", x_values[4] - 10, y_values[2] - 9)
+    platform6 = platform("platform.png", x_values[5] - 10, y_values[2] - 9)
+    platform7 = platform("platform.png", x_values[6] - 10, y_values[3] - 9)
+    platform8 = platform("platform.png", x_values[7] - 10, y_values[3] - 9)
+    platform9 = platform("platform.png", x_values[8] - 10, y_values[4] - 9)
+    platform10 = platform("platform.png", x_values[9] - 10, y_values[4] - 9)
+    platform11 = platform("platform1.png",
+                          x_values[10] - 15, y_values[5] - 10)
+    platform12 = platform("platform1.png",
+                          x_values[11] - 15, y_values[6] - 10)
+    platform13 = platform("platform1.png",
+                          x_values[12] - 15, y_values[7] - 10)
+    platform14 = platform("platform1.png",
+                          x_values[13] - 15, y_values[8] - 10)
 
     game_platforms = [platform1, platform2, platform3, platform4, platform5, platform6,
                       platform7, platform8, platform9, platform10, platform11, platform12, platform13, platform14]
@@ -345,8 +341,8 @@ def random_platform():
 
 
 def grid_init():
-    xcoords = [544+80, 712+80, 880+80, 1048+80, 1216+80]
-    ycoords = [120+80, 288+80, 456+80, 624+80, 792+80]
+    xcoords = [340+48, 445+48, 550+48, 655+48, 760+48]
+    ycoords = [75+50, 180+50, 285+50, 390+50, 495+50]
     grids = []
 
     for x in xcoords:
@@ -411,40 +407,37 @@ def check_winner(grids):
     
 
 def Intro():
-    cube = pygame.image.load(join("Images", "Backgrounds", "splash1.png")).convert()
-    rect = cube.get_rect(center = (960, 540))
+    cube = pygame.image.load(join("Images", "Backgrounds", "cube.png")).convert_alpha()
+    rect = cube.get_rect(center = (600, 338))
     screen.blit(cube, rect)
     pygame.display.flip()
     pygame.time.wait(1500)
 
-    riverbytes = pygame.image.load(join("Images", "Backgrounds", "splash2.png")).convert()
-    rect2 = riverbytes.get_rect(center = (960, 540))
-    screen.blit(riverbytes, rect2)
+    riverbytes = pygame.image.load(join("Images", "Backgrounds", "splash.png")).convert()
+    screen.blit(riverbytes, (0,0))
     pygame.display.flip()
     pygame.time.wait(1500)
 
-    homescrn = pygame.image.load(
-        "Images\Backgrounds\Starting_Screen.png").convert()
+    homescrn = pygame.image.load(join("Images", "Backgrounds", "start.png")).convert()
     homescrn = pygame.transform.scale(homescrn, (width, height))
     screen.blit(homescrn, (0, 0))
     pygame.display.flip()
 
 
 def draw_lobby(p1, p2, platforms):
-    lobby = pygame.image.load("Images\Backgrounds\lobby1.png").convert()
+    lobby = pygame.image.load(join("Images", "Backgrounds", "lobby.png")).convert()
     lobby = pygame.transform.scale(lobby, (width, height))
     screen.blit(lobby, (0, 0))
 
-    rdy = pygame.image.load(join("Images", "Lobby", "rdy.png")).convert_alpha()
-    rdy = pygame.transform.scale(rdy, (216, 40))
+    rdy = pygame.image.load(join("Images", "Items", "ready.png")).convert_alpha()
 
     for plat in platforms:
         plat.draw()
 
     if p1.ready:
-        screen.blit(rdy, (176, 136))
+        screen.blit(rdy, (110, 85))
     if p2.ready:
-        screen.blit(rdy, (1528, 136))
+        screen.blit(rdy, (955, 85))
 
     p1.draw()
     p2.draw()
@@ -453,10 +446,10 @@ def draw_lobby(p1, p2, platforms):
 
 
 def lobby(p1, p2, objects, platforms, door1, door2):
-    p1.rect.x = 456
-    p1.rect.y = 832
-    p2.rect.x = 1000
-    p2.rect.y = 832
+    p1.rect.x = 285
+    p1.rect.y = 520
+    p2.rect.x = 810
+    p2.rect.y = 520
     while not (p1.ready) or not (p2.ready):
 
         for event in pygame.event.get():
@@ -481,7 +474,7 @@ def lobby(p1, p2, objects, platforms, door1, door2):
 
 
 def draw_game(p1, p2, platforms, grids):
-    game_bg = pygame.image.load("Images\Backgrounds\gamebg.png").convert()
+    game_bg = pygame.image.load(join("Images", "Backgrounds", "gamebg.png")).convert()
     game_bg = pygame.transform.scale(game_bg, (width, height))
     screen.blit(game_bg, (0, 0))
 
@@ -497,15 +490,15 @@ def draw_game(p1, p2, platforms, grids):
     pygame.display.update()
 
 def main_game(p1, p2):
-    p1.rect.x = 180
-    p1.rect.y = 850
-    p2.rect.x = 1614
-    p2.rect.y = 850
+    p1.rect.x = 110
+    p1.rect.y = 550
+    p2.rect.x = 1090
+    p2.rect.y = 550
     platforms = random_platform()
 
-    floor_game = pygame.Rect(0, 1048, 1920, 32)
-    wall_game = pygame.Rect(31, 0, 1, 1080)
-    wall2_game = pygame.Rect(1888, 0, 1, 1080)
+    floor_game = pygame.Rect(0, 655, 1200, 20)
+    wall_game = pygame.Rect(29, 0, 1, 675)
+    wall2_game = pygame.Rect(1170, 0, 1, 675)
     game_objects = [floor_game, wall_game, wall2_game]
 
     grids = grid_init()
@@ -553,11 +546,11 @@ def main_game(p1, p2):
         full_grids = grid_check(grids, p1, p2)
         draw_game(p1, p2, platforms, grids)
         if check_winner(grids):
-            if p1.turn:
+            if p2.turn:
                 p1win = pygame.image.load(join("Images", "Backgrounds", "p1win.png")).convert()
                 screen.blit(p1win, (0,0))
                 pygame.display.flip()
-            if p2.turn:
+            if p1.turn:
                 p2win = pygame.image.load(join("Images", "Backgrounds", "p2win.png")).convert()
                 screen.blit(p2win, (0,0))
                 pygame.display.flip()
@@ -577,22 +570,22 @@ def main(screen):
     clock = pygame.time.Clock()
     Intro()
 
-    p1 = Player1(456, 832, 96, 88)
-    p2 = Player2(1000, 832, 96, 88)
+    p1 = Player1(285, 520, 60, 55)
+    p2 = Player2(810, 520, 60, 55)
 
-    platform1 = object(856, 744, 206, 39, "platform.png")
-    platform2 = object(536, 576, 238, 39, "platform.png")
-    platform3 = object(1144, 576, 238, 39, "platform.png")
-    platform4 = object(88, 392, 391, 39, "platform.png")
-    platform5 = object(840, 384, 239, 39, "platform.png")
-    platform6 = object(1440, 392, 391, 39, "platform.png")
+    platform1 = object(535, 465, 129, 24, "lobplatform.png")
+    platform2 = object(335, 360, 149, 24, "lobplatform.png")
+    platform3 = object(715, 360, 149, 24, "lobplatform.png")
+    platform4 = object(55, 245, 244, 24, "lobplatform.png")
+    platform5 = object(525, 240, 149, 24, "lobplatform.png")
+    platform6 = object(900, 245, 244, 24, "lobplatform.png")
 
-    floor = pygame.Rect(0, 920, 1920, 160)
-    wall = pygame.Rect(24, 0, 1, 1080)
-    wall2 = pygame.Rect(1897, 0, 1, 1080)
+    floor = pygame.Rect(0, 575, 1200, 100)
+    wall = pygame.Rect(19, 0, 1, 675)
+    wall2 = pygame.Rect(1180, 0, 1, 675)
 
-    door1 = object(88, 199, 391, 231, "reddoor.png")
-    door2 = object(1440, 200, 391, 231, "bluedoor.png")
+    door1 = object(55, 125, 245, 145, "p1door.png")
+    door2 = object(900, 125, 245, 145, "p2door.png")
 
     objects = [floor, wall, wall2, platform1.rect, platform2.rect,
                platform3.rect, platform4.rect, platform5.rect, platform6.rect]
